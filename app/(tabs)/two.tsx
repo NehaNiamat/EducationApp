@@ -1,31 +1,55 @@
-import { StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useProgressContext } from "../progressContext"
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function ProgressScreen() {
+  const { progress, updateProgress } = useProgressContext();
 
-export default function TabTwoScreen() {
+  // Load progress from AsyncStorage on app load
+  // useEffect(() => {
+  //   const loadProgress = async () => {
+  //     try {
+  //       const savedProgress = await AsyncStorage.getItem('progress');
+  //       if (savedProgress) {
+  //         setProgress(Number(savedProgress));
+  //       }
+  //     } catch (error) {
+  //       console.error('Failed to load progress:', error);
+  //     }
+  //   };
+  //   loadProgress();
+  // }, []);
+
+  // Save progress to AsyncStorage
+  // const saveProgress = async (newProgress: number) => {
+  //   try {
+  //     await AsyncStorage.setItem('progress', newProgress.toString());
+  //     setProgress(newProgress);
+  //   } catch (error) {
+  //     console.error('Failed to save progress:', error);
+  //   }
+  // };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
+      <Text style={styles.title}>Your Progress</Text>
+      <Text style={styles.progress}>Progress: {progress}%</Text>
+      <Button
+        title="Increase Progress"
+        onPress={() => updateProgress(progress + 10 > 100 ? 100 : progress + 10)}
+      />
+      <Button
+        title="Reset Progress"
+        color="red"
+        onPress={() => updateProgress(0)}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20 },
+  progress: { fontSize: 20, marginVertical: 10 },
 });
